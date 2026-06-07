@@ -5,13 +5,13 @@ It organizes these files into manageable database tables, providing features lik
 2. Schema evolution
 3. time travel
 
-+- - - - - - - - - - - - - - - - - - - - - - - +
-| [Layer-3] Compute Engines - Spark/Python     |
-|- - - - - - - - - - - - - - - - - - - - - - - |
-| [Layer-2] Metadata layer / OTF - Iceberg     |
-|- - - - - - - - - - - - - - - - - - - - - - - |
-| [Layer-1] Object Storage - Parquet           |
-+- - - - - - - - - - - - - - - - - - - - - - - +
++- - - - - - - - - - - - - - - - - - - - - - - +  
+| [Layer-3] Compute Engines - Spark/Python     |  
+|- - - - - - - - - - - - - - - - - - - - - - - |  
+| [Layer-2] Metadata layer / OTF - Iceberg     |  
+|- - - - - - - - - - - - - - - - - - - - - - - |  
+| [Layer-1] Object Storage - Parquet           |  
++- - - - - - - - - - - - - - - - - - - - - - - +  
 
 Three major standards are
 1. Apache Iceberg
