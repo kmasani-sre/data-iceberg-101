@@ -24,7 +24,7 @@ In this pattern, there is a disintegration of compute and object storage. Layer-
 takes care of handling the data, its compression and encoding.   
 Layer-2, Open table format then organizes this storage data into logical tables. OTF adds an abstraction layer
 through metadata and thus providing database like features such as schemas, partitions, consistency, ACID transactions.  
-Layer-3, compute engines like Spark, Trino interact with these table formats and process the data while being vendor agnostic.
+Layer-3, compute engines like Spark, Trino interact with these table formats and process the data while being vendor-agnostic.
 
 Three major standards are
 1. Apache Iceberg
