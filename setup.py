@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name="pyspark_iceberg_playground",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Kiran Masani",
+    author_email="kmasani81@gmail.com",
     description="A playground repository for PySpark and Apache Iceberg integration both locally and on AWS S3.",
     long_description=open("README.md").read() if open("README.md") else "",
     long_description_content_type="text/markdown",
