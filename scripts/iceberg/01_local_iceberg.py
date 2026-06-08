@@ -52,13 +52,12 @@ def run_pipeline():
     # 4. Write DataFrame to an Apache Iceberg Table
     print(f"Writing data to Iceberg table: {table_identifier}")
     # 'append' mode will create the table if it doesn't exist or append if it does
-    # df.write \
-    #     .format("iceberg") \
-    #     .mode("overwrite") \
-    #     .save(table_identifier)
+    df.write \
+        .format("iceberg") \
+        .mode("append") \
+        .save(table_identifier)
 
-    df.writeTo(table_identifier).createOrReplace()
-    # df.writeTo(table_identifier).create()
+    # df.writeTo(table_identifier).mode("append").createOrReplace()
 
     # 5. Read back from the Iceberg table to prove success
     print("\nQuerying the newly written Iceberg Table:")
