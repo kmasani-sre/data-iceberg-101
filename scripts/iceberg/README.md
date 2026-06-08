@@ -1,4 +1,4 @@
-## Iceberg
+## Open Table Format
 An *Open Table Format (OTF)* is an open-sourced metadata layer that sits on top of raw data files (like parquet) in Cloud storage.
 It organizes these files into manageable database tables, providing features like
 1. ACID transactions
@@ -20,3 +20,8 @@ Three major standards are
 
 ### Apache Iceberg
 Apache Iceberg uses a tree structure of metadata files that scales to massive tables with extensive snapshot history. The format separates metadata from data completely, enabling efficient operations at scale.
+
+#### Execution Output
+![Screenshot of Iceberg table Storage View.](/scripts/iceberg/images/Iceberg_Execution_Output.png)
+#### Storage View
+![Screenshot of Iceberg table Storage View.](/scripts/iceberg/images/Iceberg_Local_Storage_Version_View.png)
