@@ -1,15 +1,75 @@
-from pyspark.sql import SparkSession
+# from pyspark.sql import SparkSession
+#
+# spark = SparkSession.builder.appName("JSON_To_Iceberg") \
+#     .config("spark.jars.packages", "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.0,org.apache.iceberg:iceberg-gcp-bundle:1.10.0") \
+#     .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
+#     .config("spark.sql.catalog.local", "org.apache.iceberg.spark.SparkCatalog") \
+#     .config("spark.sql.catalog.local.type", "hadoop") \
+#     .config("spark.sql.catalog.local.warehouse", "/Users/kmasani/ml-learning/dw") \
+#     .getOrCreate()
+#
+# df = spark.read.option("multiLine", True).json("/Users/kmasani/ml-learning/movies.json")
+#
+# df.printSchema()
+#
+# df.writeTo("local.db.movies_iceberg_table").createOrReplace()
 
-spark = SparkSession.builder.appName("JSON_To_Iceberg") \
-    .config("spark.jars.packages", "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.0,org.apache.iceberg:iceberg-gcp-bundle:1.10.0") \
-    .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
-    .config("spark.sql.catalog.local", "org.apache.iceberg.spark.SparkCatalog") \
-    .config("spark.sql.catalog.local.type", "hadoop") \
-    .config("spark.sql.catalog.local.warehouse", "/Users/kmasani/ml-learning/dw") \
-    .getOrCreate()
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-df = spark.read.option("multiLine", True).json("/Users/kmasani/ml-learning/movies.json")
+from config.spark_config import get_spark_iceberg_session
 
-df.printSchema()
+def run_pipeline():
+    # 1. Start the Session
+    spark = get_spark_iceberg_session(env="local")
 
-df.writeTo("local.db.movies_iceberg_table").createOrReplace()
+    # Define paths
+    json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/input/movies.json"))
+    table_identifier = "local.default.movie_events"
+
+    # 2. Mocking a quick JSON file if it doesn't exist
+    if not os.path.exists(json_path):
+        import json
+        mock_data = [
+            {"user_id": 101, "event": "click", "timestamp": "2026-06-01 10:00:00"},
+            {"user_id": 102, "event": "login", "timestamp": "2026-06-01 10:05:00"},
+            {"user_id": 103, "event": "purchase", "timestamp": "2026-06-01 10:12:00"}
+        ]
+        print(f"Preparing the mock data .. ")
+        os.makedirs(os.path.dirname(json_path), exist_ok=True)
+        with open(json_path, 'w') as f:
+            for item in mock_data:
+                f.write(json.dumps(item) + "\n")
+
+    # 3. Read the JSON file into a Spark DataFrame
+    print(f"Reading data from: {json_path}")
+    df = spark.read.option("multiLine", True).json(json_path)
+
+    print("Inferred Schema:")
+    df.printSchema()
+
+    # 4. Write DataFrame to an Apache Iceberg Table
+    print(f"Writing data to Iceberg table: {table_identifier}")
+    # 'append' mode will create the table if it doesn't exist or append if it does
+    # df.write \
+    #     .format("iceberg") \
+    #     .mode("overwrite") \
+    #     .save(table_identifier)
+
+    df.writeTo(table_identifier).createOrReplace()
+    # df.writeTo(table_identifier).create()
+
+    # 5. Read back from the Iceberg table to prove success
+    print("\nQuerying the newly written Iceberg Table:")
+    iceberg_df = spark.read.format("iceberg").load(table_identifier)
+    iceberg_df.show()
+
+    # 6. Bonus: Querying Iceberg Metadata (Snapshots)
+    print("Iceberg Table History/Snapshots:")
+    spark.read.format("iceberg").load(f"{table_identifier}.snapshots").show(truncate=False)
+
+    spark.stop()
+
+if __name__ == "__main__":
+    run_pipeline()
