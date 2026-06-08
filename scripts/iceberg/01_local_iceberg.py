@@ -12,7 +12,7 @@ def run_pipeline():
     json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/input/movies.local.json"))
     table_identifier = "local.default.movie_events"
 
-    # Mocking a quick JSON file if it doesn't exist
+    # Mock JSON data if source file doesn't exist
     if not os.path.exists(json_path):
         import json
         mock_data = [
@@ -42,8 +42,7 @@ def run_pipeline():
         .save(table_identifier)
 
     # df.writeTo(table_identifier).mode("append").createOrReplace()
-
-    # Read back from the Iceberg table to prove success
+    # Read back from the Iceberg table
     print("\nQuerying the newly written Iceberg Table:")
     iceberg_df = spark.read.format("iceberg").load(table_identifier)
     iceberg_df.show()
