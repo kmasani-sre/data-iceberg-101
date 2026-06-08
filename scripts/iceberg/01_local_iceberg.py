@@ -8,7 +8,7 @@
 #     .config("spark.sql.catalog.local.warehouse", "/Users/kmasani/ml-learning/dw") \
 #     .getOrCreate()
 #
-# df = spark.read.option("multiLine", True).json("/Users/kmasani/ml-learning/movies.json")
+# df = spark.read.option("multiLine", True).json("/Users/kmasani/ml-learning/movies.local.json")
 #
 # df.printSchema()
 #
@@ -25,7 +25,7 @@ def run_pipeline():
     spark = get_spark_iceberg_session(env="local")
 
     # Define paths
-    json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/input/movies.json"))
+    json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/input/movies.local.json"))
     table_identifier = "local.default.movie_events"
 
     # 2. Mocking a quick JSON file if it doesn't exist

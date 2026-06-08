@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.appName('ReadJSON').getOrCreate()
 
-dataFrame = spark.read.option("multiLine",True).json(os.path.abspath("./data/input/movies.json"))
+dataFrame = spark.read.option("multiLine",True).json(os.path.abspath("./data/input/movies.local.json"))
 
 dataFrame.createOrReplaceTempView("MoviesTable")
 
