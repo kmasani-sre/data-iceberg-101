@@ -5,13 +5,7 @@
 4. Load this dataset (S3 bucket / Iceberg tables) onto Databricks
 5. Use Databricks to analyze/query the data
 
-## Open Table Format
-An *Open Table Format (OTF)* is an open-sourced metadata layer that sits on top of raw data files (like parquet) in Cloud storage.
-It organizes these files into manageable database tables, providing features like
-1. ACID transactions
-2. Schema evolution
-3. Time travel 
-
+## Data Lakehouse Architecture
 +- - - - - - - - - - - - - - - - - - - - - - - +  
 | [Layer-3] Compute Engines - Spark/Python     |  
 |- - - - - - - - - - - - - - - - - - - - - - - |  
@@ -20,13 +14,20 @@ It organizes these files into manageable database tables, providing features lik
 | [Layer-1] Object Storage - Parquet           |  
 +- - - - - - - - - - - - - - - - - - - - - - - +  
 
-In this pattern, there is a disintegration of compute and object storage. Layer-1 leveraging existing file formats like avro, parquet
+In this architecture pattern, there is a disintegration of compute and object storage. Layer-1 leveraging existing file formats like avro, parquet
 takes care of handling the data, its compression and encoding.   
   
 Layer-2, OTF then organizes this storage data into logical tables. OTF adds an abstraction layer
 through metadata and thus providing database like features such as schemas, partitions, consistency, ACID transactions.  
   
 Layer-3, compute engines like Spark, Trino interact with the OTF and process the data while being vendor-agnostic.
+
+## Open Table Format
+An *Open Table Format (OTF)* is an open-sourced metadata layer that sits on top of raw data files (like parquet) in Cloud storage.
+It organizes these files into manageable database tables, providing features like
+1. ACID transactions
+2. Schema evolution
+3. Time travel
 
 Three major standards are
 1. Apache Iceberg
