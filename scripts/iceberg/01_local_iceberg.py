@@ -5,14 +5,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config.spark_config import get_spark_iceberg_session
 
 def run_pipeline():
-    # 1. Start the Session
+    # Start the Session
     spark = get_spark_iceberg_session(env="local")
 
     # Define paths
     json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/input/movies.local.json"))
     table_identifier = "local.default.movie_events"
 
-    # 2. Mocking a quick JSON file if it doesn't exist
+    # Mocking a quick JSON file if it doesn't exist
     if not os.path.exists(json_path):
         import json
         mock_data = [
@@ -26,14 +26,14 @@ def run_pipeline():
             for item in mock_data:
                 f.write(json.dumps(item) + "\n")
 
-    # 3. Read the JSON file into a Spark DataFrame
+    # Read the JSON file into a Spark DataFrame
     print(f"Reading data from: {json_path}")
     df = spark.read.option("multiLine", True).json(json_path)
 
     print("Inferred Schema:")
     df.printSchema()
 
-    # 4. Write DataFrame to an Apache Iceberg Table
+    # Write DataFrame to an Apache Iceberg Table
     print(f"Writing data to Iceberg table: {table_identifier}")
     # 'append' mode will create the table if it doesn't exist or append if it does
     df.write \
@@ -43,12 +43,12 @@ def run_pipeline():
 
     # df.writeTo(table_identifier).mode("append").createOrReplace()
 
-    # 5. Read back from the Iceberg table to prove success
+    # Read back from the Iceberg table to prove success
     print("\nQuerying the newly written Iceberg Table:")
     iceberg_df = spark.read.format("iceberg").load(table_identifier)
     iceberg_df.show()
 
-    # 6. Bonus: Querying Iceberg Metadata (Snapshots)
+    # Querying Iceberg Metadata (Snapshots)
     print("Iceberg Table History/Snapshots:")
     spark.read.format("iceberg").load(f"{table_identifier}.snapshots").show(truncate=False)
 
